@@ -70,7 +70,10 @@ def putBuchung():
     params['verwendungsID'] = verwendungsid
 
     newTransaktion = transaktion(cursor=cursor, connection=connection, **params)
-       
+
+@app.route("/")
+def home():
+    return "Hier gibt es nichts zu sehen"
     
 
 if __name__ == '__main__':
