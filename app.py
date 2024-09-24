@@ -1,7 +1,7 @@
 # import io
 from flask import Flask, jsonify, request, send_file
 from flask_cors import CORS
-# from transaktion import transaktion
+from transaktion import transaktion
 # from createDiagramm import createDia
 
 import psycopg2
@@ -54,7 +54,10 @@ def putPerson():
 def putBuchung():
     #SQL Abfrage, die Buchung in der Datenbank updated
     #Daten: ID, Betrag, Verwendungszweck, Status(Einzahlung/Auszahlung)
-    pass
+    cursor, connection = connectDB()
+    
+    newTransaktion = transaktion(cursor=cursor, connection=connection)
+    
 
 if __name__ == '__main__':
     app.run(debug=True)
