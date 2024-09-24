@@ -2,7 +2,8 @@ from decimal import Decimal
 import psycopg2
 
 class transaktion:
-    def __init__(self, userID,  Name = "Tester", datum = "24-01-01", eingang=0, abgang=0, verwendungszweck="", produkt="Gegenstand"):
+    def __init__(self, userID,  Name = "Tester", datum = "24-01-01", eingang=0, abgang=0, verwendungszweck="", produkt="Gegenstand", verwendungsID = 1):
+        self.verwendungsid = verwendungsID
         self.produkt = produkt
         self.userID = userID
         self.name = Name
@@ -32,9 +33,8 @@ class transaktion:
             resultKonto = self.kontostand
                 
         cursor.execute(f"""SELECT MAX("TransaktionsID") FROM einauszahlungen WHERE "UserID" = {self.userID}""")
-        print(cursor.fetchall())
         resultID = cursor.fetchone()
-        if resultID[0] is None:
+        if resultID is None or resultID[0] is None:
             resultID = 1
         else:
             resultID = resultID[0] + 1
@@ -45,8 +45,8 @@ class transaktion:
             resultKonto -= self.abgang
             
         sql_befehl = f"""
-        INSERT INTO Users (TransaktionsID, UserID, Kontostand, Einzahlung, Auszahlung, Produkt)
-        VALUES ({resultID}, {self.userID}, {resultKonto}, {self.eingang}, {self.abgang}, '{self.produkt}', '{self.name}',  '{self.name}');
+        INSERT INTO einauszahlungen ("TransaktionsID", "UserID", "Kontostand", "Einzahlung", "Auszahlung", "Produkt", "VerwendungsID")
+        VALUES ({resultID}, {self.userID}, {resultKonto}, {self.eingang}, {self.abgang}, '{self.produkt}', {self.verwendungsid});
         """
 
       
