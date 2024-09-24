@@ -1,5 +1,3 @@
-import mysql.connector as sql
-from mysql.connector import Error
 from decimal import Decimal
 import psycopg2
 
@@ -14,51 +12,49 @@ class transaktion:
         
         
     def doTransaktion(self):
-        try:
+      
 
-            connection = psycopg2.connect(
-                host='aws-0-eu-central-1.pooler.supabase.com',        
-                user='postgres.jpvtmjvrpafzjvoghojs',  
-                password='Dsde22.11.23FD',              
-                database='postgres',
-                port=6543  
-            )
-            print("Verbindung erstellt")
-            cursor = connection.cursor()
+        connection = psycopg2.connect(
+            host='aws-0-eu-central-1.pooler.supabase.com',        
+            user='postgres.jpvtmjvrpafzjvoghojs',  
+            password='Dsde22.11.23FD',              
+            database='postgres',
+            port=6543  
+        )
+        print("Verbindung erstellt")
+        cursor = connection.cursor()
+        
+        # cursor.execute("""SELECT kontostand FROM Users ORDER BY transaktion_id DESC LIMIT 1""")
+        # resultKonto = cursor.fetchone()
+        # if resultKonto:
+        #     resultKonto = Decimal(resultKonto[0]) 
+        # else:
+        #     resultKonto = self.kontostand
+                
+        cursor.execute("""SELECT MAX(users.UserID) FROM users""")
+        cursor.execute("""SELECT table_name FROM information_schema.tables WHERE table_schema = 'public';""")
+        # resultID = cursor.fetchone()
+        # if resultID[0] is None:
+        #     resultID = 1
+        # else:
+        #     resultID = resultID[0] + 1
+        
+        # if self.eingang != 0:
+        #     resultKonto += self.eingang
+        # else:
+        #     resultKonto -= self.abgang
             
-            # cursor.execute("""SELECT kontostand FROM Users ORDER BY transaktion_id DESC LIMIT 1""")
-            # resultKonto = cursor.fetchone()
-            # if resultKonto:
-            #     resultKonto = Decimal(resultKonto[0]) 
-            # else:
-            #     resultKonto = self.kontostand
-                  
-            cursor.execute("""SELECT MAX(UserID) FROM einauszahlungen""")
-            cursor.execute("""SELECT table_name FROM information_schema.tables WHERE table_schema = 'public';""")
-            # resultID = cursor.fetchone()
-            # if resultID[0] is None:
-            #     resultID = 1
-            # else:
-            #     resultID = resultID[0] + 1
-            
-            # if self.eingang != 0:
-            #     resultKonto += self.eingang
-            # else:
-            #     resultKonto -= self.abgang
-             
-            # sql_befehl = f"""
-            # INSERT INTO Users (UserID, first_name, last_name, EMail, Passwort, Username)
-            # VALUES ({resultID}, {self.name}, {self.name}, '{self.name}', '{self.name}',  '{self.name}');
-            # """
+        # sql_befehl = f"""
+        # INSERT INTO Users (UserID, first_name, last_name, EMail, Passwort, Username)
+        # VALUES ({resultID}, {self.name}, {self.name}, '{self.name}', '{self.name}',  '{self.name}');
+        # """
 
-            print(cursor.fetchall())
-            # cursor.execute(sql_befehl)           
-            connection.commit()
-            print("Daten erfolgreich eingefügt")
-        
-        except Error as e:
-            print(f"Fehler: {e}")
-        
+        print(cursor.fetchall())
+        # cursor.execute(sql_befehl)           
+        connection.commit()
+        print("Daten erfolgreich eingefügt")
+    
+    
         # finally:
         #     if 'connection' in locals() and connection.is_connected():
         #         connection.close()
