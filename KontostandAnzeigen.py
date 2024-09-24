@@ -1,5 +1,3 @@
-import mysql.connector as sql
-from mysql.connector import Error
 from decimal import Decimal
 import psycopg2
 

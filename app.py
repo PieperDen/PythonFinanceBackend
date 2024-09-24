@@ -9,10 +9,6 @@ from createDiagramm import createDia
 app = Flask(__name__)
 CORS(app)
 
-
-    
-    
-
 @app.route('/api/data', methods=['POST'])
 def post_data():
 
@@ -31,12 +27,36 @@ def post_data():
     
     return jsonify({'received': data})
 
+#Brauchst du eig nicht
+# @app.route('/getKontostand')
+# def getKontostand():
+#     konto = getKonto()
+#     result = konto.SQLGetKonto()
+#     return jsonify({'kontostand': result})
 
-@app.route('/getKontostand')
-def getKontostand():
-    konto = getKonto()
-    result = konto.SQLGetKonto()
-    return jsonify({'kontostand': result})
+@app.route('/getPerson', methods=['GET'])
+def getPerson():
+    #Bsp:
+    # id = 1
+    # name = "Max Mustermann"
+    # balance = 1000
+    # verwendungsZweckList = ['Einzahlung', 'Auszahlung']
+
+    #SQL Abfrage, die User Daten aus der Datenbank holt
+
+    #return jsonify({'id': id, 'name': name, 'balance': balance, 'list': verwendungsZweckList})
+    pass
+
+@app.route('/putPerson', methods=['POST'])
+def putPerson():
+    #SQL Abfrage, die User Daten in der Datenbank updated
+    pass
+
+@app.route('/putBuchung', methods=['POST'])
+def putBuchung():
+    #SQL Abfrage, die Buchung in der Datenbank updated
+    #Daten: ID, Betrag, Verwendungszweck, Status(Einzahlung/Auszahlung)
+    pass
     
 
 @app.route('/getImage')
