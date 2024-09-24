@@ -14,7 +14,7 @@ def post_data():
 
     data = request.json  
     
-    betrag = data.get('Betrag')
+    betrag = data.get('balance')
     status = data.get('status')
     
     if status == "Einzahlung":

@@ -2,7 +2,8 @@ from decimal import Decimal
 import psycopg2
 
 class transaktion:
-    def __init__(self, Name = "Tester", datum = "24-01-01", eingang=0, abgang=0, verwendungszweck=""):
+    def __init__(self, userID,  Name = "Tester", datum = "24-01-01", eingang=0, abgang=0, verwendungszweck=""):
+        self.userID = userID
         self.name = Name
         self.datum = datum
         self.eingang = Decimal(eingang)
@@ -24,29 +25,29 @@ class transaktion:
         print("Verbindung erstellt")
         cursor = connection.cursor()
         
-        # cursor.execute("""SELECT kontostand FROM Users ORDER BY transaktion_id DESC LIMIT 1""")
-        # resultKonto = cursor.fetchone()
-        # if resultKonto:
-        #     resultKonto = Decimal(resultKonto[0]) 
-        # else:
-        #     resultKonto = self.kontostand
+        cursor.execute("""SELECT kontostand FROM Users ORDER BY transaktion_id DESC LIMIT 1""")
+        resultKonto = cursor.fetchone()
+        if resultKonto:
+            resultKonto = Decimal(resultKonto[0]) 
+        else:
+            resultKonto = self.kontostand
                 
-        cursor.execute("""SELECT MAX("UserID") FROM users""")
+        cursor.execute("""SELECT MAX("TransaktionsID") FROM einauszahlungen""")
         print(cursor.fetchall())
         resultID = cursor.fetchone()
-        # if resultID[0] is None:
-        #     resultID = 1
-        # else:
-        #     resultID = resultID[0] + 1
+        if resultID[0] is None:
+            resultID = 1
+        else:
+            resultID = resultID[0] + 1
         
-        # if self.eingang != 0:
-        #     resultKonto += self.eingang
-        # else:
-        #     resultKonto -= self.abgang
+        if self.eingang != 0:
+            resultKonto += self.eingang
+        else:
+            resultKonto -= self.abgang
             
         sql_befehl = f"""
-        INSERT INTO Users (UserID, first_name, last_name, EMail, Passwort, Username)
-        VALUES ({resultID}, {self.name}, {self.name}, '{self.name}', '{self.name}',  '{self.name}');
+        INSERT INTO Users (TransaktionsID, UserID, first_name, last_name, EMail, Passwort, Username)
+        VALUES ({self.}, {self.userID}, {self.name}, {self.name}, '{self.name}', '{self.name}',  '{self.name}');
         """
 
       
