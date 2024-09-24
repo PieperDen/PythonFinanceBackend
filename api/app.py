@@ -52,15 +52,25 @@ def putPerson():
 
 @app.route('/putBuchung', methods=['POST'])
 def putBuchung():
-    #SQL Abfrage, die Buchung in der Datenbank updated
-    #Daten: ID, Betrag, Verwendungszweck, Status(Einzahlung/Auszahlung)
+    
     data = request.get_json()
     cursor, connection = connectDB()
     UserID = data.get('id')
     status = data.get('Status')
     betrag = data.get('betrag')
     verwendungsid = data.get('Verwendungszweck')
-    newTransaktion = transaktion(cursor=cursor, connection=connection)
+
+    transaktion_params = {
+        'Einzahlung': {'eingang': betrag},
+        'Auszahlung': {'abgang': betrag}
+    }
+
+    params = transaktion_params.get(status, {})
+    params['userID'] = UserID
+    params['verwendungsID'] = verwendungsid
+
+    newTransaktion = transaktion(cursor=cursor, connection=connection, **params)
+       
     
 
 if __name__ == '__main__':
