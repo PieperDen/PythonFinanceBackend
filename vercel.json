@@ -1,9 +1,5 @@
 {"version": 2,
-    "functions": {
-      "api/app.py": {
-        "runtime": "python3.9"
-      }
-    },
+    
     "builds": [
       {
         "src": "api/app.py",
@@ -11,7 +7,7 @@
       }],
       "routes":[
         {
-          "src": "/(-*)",
+          "src": "/(.*)",
           "dest": "api/app.py"
         }
     ]}
