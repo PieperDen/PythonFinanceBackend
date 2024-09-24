@@ -2,7 +2,8 @@ from decimal import Decimal
 import psycopg2
 
 class transaktion:
-    def __init__(self, userID,  Name = "Tester", datum = "24-01-01", eingang=0, abgang=0, verwendungszweck=""):
+    def __init__(self, userID,  Name = "Tester", datum = "24-01-01", eingang=0, abgang=0, verwendungszweck="", produkt="Gegenstand"):
+        self.produkt = produkt
         self.userID = userID
         self.name = Name
         self.datum = datum
@@ -13,8 +14,6 @@ class transaktion:
         
         
     def doTransaktion(self):
-      
-
         connection = psycopg2.connect(
             host='aws-0-eu-central-1.pooler.supabase.com',        
             user='postgres.jpvtmjvrpafzjvoghojs',  
@@ -25,14 +24,14 @@ class transaktion:
         print("Verbindung erstellt")
         cursor = connection.cursor()
         
-        cursor.execute("""SELECT kontostand FROM Users ORDER BY transaktion_id DESC LIMIT 1""")
+        cursor.execute(f"""SELECT "Kontostand" FROM einauszahlungen WHERE "UserID" = {self.userID} ORDER BY "TransaktionsID" DESC LIMIT 1""")
         resultKonto = cursor.fetchone()
         if resultKonto:
             resultKonto = Decimal(resultKonto[0]) 
         else:
             resultKonto = self.kontostand
                 
-        cursor.execute("""SELECT MAX("TransaktionsID") FROM einauszahlungen""")
+        cursor.execute(f"""SELECT MAX("TransaktionsID") FROM einauszahlungen WHERE "UserID" = {self.userID}""")
         print(cursor.fetchall())
         resultID = cursor.fetchone()
         if resultID[0] is None:
@@ -46,8 +45,8 @@ class transaktion:
             resultKonto -= self.abgang
             
         sql_befehl = f"""
-        INSERT INTO Users (TransaktionsID, UserID, first_name, last_name, EMail, Passwort, Username)
-        VALUES ({self.}, {self.userID}, {self.name}, {self.name}, '{self.name}', '{self.name}',  '{self.name}');
+        INSERT INTO Users (TransaktionsID, UserID, Kontostand, Einzahlung, Auszahlung, Produkt)
+        VALUES ({resultID}, {self.userID}, {resultKonto}, {self.eingang}, {self.abgang}, '{self.produkt}', '{self.name}',  '{self.name}');
         """
 
       
@@ -61,7 +60,7 @@ class transaktion:
 
   
 if __name__ == "__main__":
-    connecter = transaktion()
+    connecter = transaktion(userID = 1)
     connecter.doTransaktion()
         
         
