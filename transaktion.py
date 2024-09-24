@@ -31,36 +31,31 @@ class transaktion:
         # else:
         #     resultKonto = self.kontostand
                 
-        cursor.execute("""SELECT MAX(users.UserID) FROM users""")
-        cursor.execute("""SELECT table_name FROM information_schema.tables WHERE table_schema = 'public';""")
-        # resultID = cursor.fetchone()
-        # if resultID[0] is None:
-        #     resultID = 1
-        # else:
-        #     resultID = resultID[0] + 1
-        
-        # if self.eingang != 0:
-        #     resultKonto += self.eingang
-        # else:
-        #     resultKonto -= self.abgang
-            
-        # sql_befehl = f"""
-        # INSERT INTO Users (UserID, first_name, last_name, EMail, Passwort, Username)
-        # VALUES ({resultID}, {self.name}, {self.name}, '{self.name}', '{self.name}',  '{self.name}');
-        # """
-
+        cursor.execute("""SELECT MAX("UserID") FROM users""")
         print(cursor.fetchall())
-        # cursor.execute(sql_befehl)           
+        resultID = cursor.fetchone()
+        if resultID[0] is None:
+            resultID = 1
+        else:
+            resultID = resultID[0] + 1
+        
+        if self.eingang != 0:
+            resultKonto += self.eingang
+        else:
+            resultKonto -= self.abgang
+            
+        sql_befehl = f"""
+        INSERT INTO Users (UserID, first_name, last_name, EMail, Passwort, Username)
+        VALUES ({resultID}, {self.name}, {self.name}, '{self.name}', '{self.name}',  '{self.name}');
+        """
+
+      
+        cursor.execute(sql_befehl)           
         connection.commit()
         print("Daten erfolgreich eingefügt")
     
     
-        # finally:
-        #     if 'connection' in locals() and connection.is_connected():
-        #         connection.close()
-        #         print("Verbindung geschlossen.")
-                
-                
+     
                 
 
   
