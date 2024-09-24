@@ -34,15 +34,15 @@ class transaktion:
         cursor.execute("""SELECT MAX("UserID") FROM users""")
         print(cursor.fetchall())
         resultID = cursor.fetchone()
-        if resultID[0] is None:
-            resultID = 1
-        else:
-            resultID = resultID[0] + 1
+        # if resultID[0] is None:
+        #     resultID = 1
+        # else:
+        #     resultID = resultID[0] + 1
         
-        if self.eingang != 0:
-            resultKonto += self.eingang
-        else:
-            resultKonto -= self.abgang
+        # if self.eingang != 0:
+        #     resultKonto += self.eingang
+        # else:
+        #     resultKonto -= self.abgang
             
         sql_befehl = f"""
         INSERT INTO Users (UserID, first_name, last_name, EMail, Passwort, Username)

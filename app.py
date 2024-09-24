@@ -15,9 +15,9 @@ def post_data():
     data = request.json  
     
     betrag = data.get('Betrag')
-    verwendung = data.get('verwendung')
+    status = data.get('status')
     
-    if verwendung == "Einzahlung":
+    if status == "Einzahlung":
         tran = transaktion(eingang=betrag, verwendungszweck="Geld wurde eingezahlt")
         tran.doTransaktion()
     else:
