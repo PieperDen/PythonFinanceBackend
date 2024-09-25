@@ -2,7 +2,9 @@ from decimal import Decimal
 import psycopg2
 
 class transaktion:
-    def __init__(self, userID,  Name = "Tester", datum = "24-01-01", eingang=0, abgang=0, verwendungszweck="", produkt="Gegenstand", verwendungsID = 1):
+    def __init__(self, cursor, connection, userID,  Name = "Tester", datum = "24-01-01", eingang=0, abgang=0, verwendungszweck="", produkt="Gegenstand", verwendungsID = 1):
+        self.cursor = cursor
+        self.connection = connection
         self.verwendungsid = verwendungsID
         self.produkt = produkt
         self.userID = userID
@@ -15,25 +17,18 @@ class transaktion:
         
         
     def doTransaktion(self):
-        connection = psycopg2.connect(
-            host='aws-0-eu-central-1.pooler.supabase.com',        
-            user='postgres.jpvtmjvrpafzjvoghojs',  
-            password='Dsde22.11.23FD',              
-            database='postgres',
-            port=6543  
-        )
         print("Verbindung erstellt")
-        cursor = connection.cursor()
+        self.cursor = self.connection.cursor()
         
-        cursor.execute(f"""SELECT "Kontostand" FROM einauszahlungen WHERE "UserID" = {self.userID} ORDER BY "TransaktionsID" DESC LIMIT 1""")
-        resultKonto = cursor.fetchone()
+        self.cursor.execute(f"""SELECT "Kontostand" FROM einauszahlungen WHERE "UserID" = {self.userID} ORDER BY "TransaktionsID" DESC LIMIT 1""")
+        resultKonto = self.cursor.fetchone()
         if resultKonto:
             resultKonto = Decimal(resultKonto[0]) 
         else:
             resultKonto = self.kontostand
                 
-        cursor.execute(f"""SELECT MAX("TransaktionsID") FROM einauszahlungen WHERE "UserID" = {self.userID}""")
-        resultID = cursor.fetchone()
+        self.cursor.execute(f"""SELECT MAX("TransaktionsID") FROM einauszahlungen WHERE "UserID" = {self.userID}""")
+        resultID = self.cursor.fetchone()
         if resultID is None or resultID[0] is None:
             resultID = 1
         else:
@@ -50,8 +45,8 @@ class transaktion:
         """
 
       
-        cursor.execute(sql_befehl)           
-        connection.commit()
+        self.cursor.execute(sql_befehl)           
+        self.connection.commit()
         print("Daten erfolgreich eingefügt")
     
     
