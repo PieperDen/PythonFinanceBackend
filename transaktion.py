@@ -1,5 +1,6 @@
 from decimal import Decimal
 import psycopg2
+import hashlib
 
 class transaktion:
     def __init__(self, cursor, connection, userID,  Name = "Tester", datum = "24-01-01", eingang=0, abgang=0, verwendungszweck="", produkt="Gegenstand", verwendungsID = 1):
@@ -18,7 +19,7 @@ class transaktion:
         
     def doTransaktion(self):
         print("Verbindung erstellt")
-        self.cursor = self.connection.cursor()
+       
         
         self.cursor.execute(f"""SELECT "Kontostand" FROM einauszahlungen WHERE "UserID" = {self.userID} ORDER BY "TransaktionsID" DESC LIMIT 1""")
         resultKonto = self.cursor.fetchone()
@@ -48,7 +49,20 @@ class transaktion:
         self.cursor.execute(sql_befehl)           
         self.connection.commit()
         print("Daten erfolgreich eingefügt")
-    
+        
+        
+    def saveUser(self, UserID, passwort, Username, first_name, last_name, Email, Bio="Ein dankbarer User"):
+        hashesdpasswort = hashlib.sha256(passwort.encode()).hexdigest()
+        
+        
+        sql_befehl = f"""
+        INSERT INTO users ("UserID", "first_name", "last_name", "EMail", "Passwort", "Username", "Bio")
+        VALUES ({UserID}, {first_name}, {last_name}, {Email}, {hashesdpasswort}, '{Username}', {Bio});
+        """
+
+        self.cursor.execute(sql_befehl)    
+        
+
     
      
                 
