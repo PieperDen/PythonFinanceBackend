@@ -1,7 +1,10 @@
 # import io
 from flask import Flask, jsonify, request, send_file
 from flask_cors import CORS
+from flask import Flask, request, redirect, url_for, session, render_template
+
 from transaktion import transaktion
+
 # from createDiagramm import createDia
 
 import psycopg2
@@ -34,12 +37,6 @@ def getPerson():
 
     cursor.execute("""SELECT "Verwendung" FROM Verwendungen where "UserID" = {}""".format(userData[0][0]))
     verwendungsZweckList = cursor.fetchall()
-
-    #Bsp:
-    # id = 1
-    # name = "Max Mustermann"
-    # balance = 1000
-    # verwendungsZweckList = ['Einzahlung', 'Auszahlung']
 
     connection.commit()
     return jsonify({'id': userData[0][0], 'name': userData[0][6], 'balance': balance[0][0], 'list': verwendungsZweckList[0]})
@@ -74,7 +71,31 @@ def putBuchung():
 @app.route("/")
 def home():
     return "Hier gibt es nichts zu sehen"
+
+@app.route('/login', methods=['POST'])
+def login():
+    cursor, connection = connectDB()
+    data = request.get_json()
+    user = data.get('username')
+    passwort = data.get('password')
+    cursor.execute(f"""SELECT * FROM Users WHERE Passwort = '{passwort}' AND Username = '{user}'""")
+    username = cursor.fetchall[0]
+    if username == user:
+        session['username'] = user
+        
+        return redirect(url_for('success')) 
+    else:
+        return redirect(url_for('success')) 
     
+    
+@app.route('/success')
+def success():
+    return render_template('index2.html')
+
+    
+@app.route('/denied')
+def success():
+    return render_template('index.html')
 
 if __name__ == '__main__':
     app.run(debug=True)
