@@ -7,7 +7,7 @@ from PIL import Image
 
 
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
-image = Image.open('image.png')
+image = Image.open('Pictures\image.png')
 pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
 
 width, height = image.size
@@ -15,9 +15,8 @@ upper_half = image.crop((0, 0, width, height // 2))
 lower_half = image.crop((0, height // 2, width, height))
 up = pytesseract.image_to_string(upper_half, lang = "deu")
 down  = pytesseract.image_to_string(lower_half, lang = "deu")
-file  = pytesseract.image_to_string(image, lang = "deu")
 with open('output.txt', 'w', encoding='utf-8') as out_file:
-    out_file.write(file)
+    out_file.write(up)
 
 with open('output2.txt', 'w', encoding='utf-8') as out_file:
     out_file.write(down)

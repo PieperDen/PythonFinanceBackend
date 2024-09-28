@@ -80,22 +80,17 @@ def login():
     passwort = data.get('password')
     cursor.execute(f"""SELECT * FROM Users WHERE Passwort = '{passwort}' AND Username = '{user}'""")
     username = cursor.fetchall[0]
+    connection.commit()
     if username == user:
         session['username'] = user
         
-        return redirect(url_for('success')) 
+        return jsonify({"message": "successful", "username": user}), 200
     else:
-        return redirect(url_for('success')) 
+        return redirect(url_for('denied')) 
     
     
-@app.route('/success')
-def success():
-    return render_template('index2.html')
 
-    
-@app.route('/denied')
-def denied():
-    return render_template('index.html')
+
 
 if __name__ == '__main__':
     app.run(debug=True)
