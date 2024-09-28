@@ -86,7 +86,7 @@ def login():
         
         return jsonify({"message": "successful", "username": user}), 200
     else:
-        return redirect(url_for('denied')) 
+        return jsonify({"message": "denied", "username": user}), 200
     
     
 
