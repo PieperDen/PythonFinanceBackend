@@ -15,7 +15,13 @@ class transaktion:
         self.abgang = Decimal(abgang)
         self.verwendungszweck = verwendungszweck
         
-        
+    
+    
+    def getID(self, resultID):
+        if resultID is None or resultID[0] is None:
+            return 1
+        else:
+            return resultID[0] + 1
         
     def doTransaktion(self):
         print("Verbindung erstellt")
@@ -29,11 +35,8 @@ class transaktion:
             resultKonto = self.kontostand
                 
         self.cursor.execute(f"""SELECT MAX("TransaktionsID") FROM einauszahlungen WHERE "UserID" = {self.userID}""")
-        resultID = self.cursor.fetchone()
-        if resultID is None or resultID[0] is None:
-            resultID = 1
-        else:
-            resultID = resultID[0] + 1
+        resultID = self.getID(self.cursor.fetchone())
+        
         
         if self.eingang != 0:
             resultKonto += self.eingang
@@ -49,18 +52,24 @@ class transaktion:
         self.cursor.execute(sql_befehl)           
         self.connection.commit()
         print("Daten erfolgreich eingefügt")
+    
+    
+    
         
         
-    def saveUser(self, UserID, passwort, Username, first_name, last_name, Email, Bio="Ein dankbarer User"):
+    def saveUser(self, passwort, Username, first_name, last_name, Email, Bio="Ein dankbarer User"):
         hashesdpasswort = hashlib.sha256(passwort.encode()).hexdigest()
-        
+                    
+        self.cursor.execute(f"""SELECT MAX("UserID") FROM users""")
+        resultID = self.getID(self.cursor.fetchone())
         
         sql_befehl = f"""
         INSERT INTO users ("UserID", "first_name", "last_name", "EMail", "Passwort", "Username", "Bio")
-        VALUES ({UserID}, {first_name}, {last_name}, {Email}, {hashesdpasswort}, '{Username}', {Bio});
+        VALUES ({resultID},  '{first_name}',  '{last_name}',  '{Email}',  '{hashesdpasswort}', '{Username}',  '{Bio}');
         """
 
         self.cursor.execute(sql_befehl)    
+        self.connection.commit()
         
 
     
@@ -69,7 +78,18 @@ class transaktion:
 
   
 if __name__ == "__main__":
-    connecter = transaktion(userID = 1)
-    connecter.doTransaktion()
+    def connectDB():
+        connection = psycopg2.connect(
+                host='aws-0-eu-central-1.pooler.supabase.com',        
+                user='postgres.jpvtmjvrpafzjvoghojs',  
+                password='Dsde22.11.23FD',              
+                database='postgres',
+                port=6543  
+            )
+        cursor = connection.cursor()
+        return cursor, connection
+    cursor, connection = connectDB()
+    connecter = transaktion(userID = 1, cursor=cursor, connection=connection)
+    connecter.saveUser(2, "EntenTiger", "Fiona", "FIFI", "Pieper", "hopspop@irgendwas")
         
-        
+    
